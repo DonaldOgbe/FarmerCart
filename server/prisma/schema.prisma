@@ -1,13 +1,168 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  BUYER
+  FARMER
+  ADMIN
+}
+
+enum PaymentType {
+  COD
+  ONLINE
+}
+
+enum OrderStatus {
+  ORDER_PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(BUYER)
+
+  // Farmer-specific fields
+  farmName  String?
+  state     String?
+  lga       String?
+  phone     String?
+
+  // Relations
+  addresses Address[]
+  products  Product[] @relation("FarmerProducts")
+
+  cart      Cart?
+
+  orders    Order[]   @relation("BuyerOrders")
+  sales     OrderItem[] @relation("FarmerSales")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  userId    String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  firstName String
+  lastName  String
+  email     String
+  street    String
+  city      String
+  state     String
+  zipcode   Int
+  country   String
+  phone     String
+
+  orders    Order[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+
+  farmerId    String
+  farmer      User     @relation("FarmerProducts", fields: [farmerId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String
+  price       Decimal
+  offerPrice  Decimal?
+  images      String[]
+  category    String
+  quantity    Int      @default(0)
+  inStock     Boolean  @default(true)
+
+  // Produce-specific fields
+  unit        String   @default("50kg Bag")
+  location    String?
+
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items     CartItem[]
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+
+  cartId    String
+  productId String
+
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  quantity  Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // A product can only appear once in a particular cart.
+  @@unique([cartId, productId])
+}
+
+model Order {
+  id          String      @id @default(uuid())
+
+  userId      String
+  user        User        @relation("BuyerOrders", fields: [userId], references: [id])
+
+  addressId   String
+  address     Address     @relation(fields: [addressId], references: [id])
+
+  amount      Decimal
+  status      OrderStatus @default(ORDER_PLACED)
+
+  paymentType PaymentType @default(COD)
+  isPaid      Boolean     @default(false)
+
+  items       OrderItem[]
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+
+  orderId   String
+  productId String
+  farmerId  String
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+  farmer    User     @relation("FarmerSales", fields: [farmerId], references: [id])
+
+  quantity  Int
+  price     Decimal
+
+  createdAt DateTime @default(now())
 }
