@@ -31,7 +31,7 @@ export const addProduct = async (req, res) => {
 
         const produceLocation = location || `${farmerProfile?.lga || ''}, ${farmerProfile?.state || ''}`.trim();
 
-        // Create Produce in PostgreSQL
+        
         const product = await prisma.product.create({
             data: {
                 farmerId: req.userId,
@@ -55,7 +55,7 @@ export const addProduct = async (req, res) => {
     }
 };
 
-// Get All Produce Listings (Marketplace View for Buyers) : GET /api/product/list
+// Get All Produce Listings 
 export const productList = async (req, res) => {
     try {
         const products = await prisma.product.findMany({
@@ -81,7 +81,7 @@ export const productList = async (req, res) => {
     }
 };
 
-// Get Single Produce Details : GET /api/product/:id
+// Get Single Produce Details
 export const productById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -112,7 +112,7 @@ export const productById = async (req, res) => {
     }
 };
 
-// Get Listings Created by Logged-In Farmer : GET /api/product/farmer
+// Get Listings Created by Logged-In Farmer
 export const getFarmerProducts = async (req, res) => {
     try {
         const products = await prisma.product.findMany({
@@ -127,7 +127,7 @@ export const getFarmerProducts = async (req, res) => {
     }
 };
 
-// Update Produce Stock / Quantity : POST /api/product/stock
+// Update Produce Stock / Quantity
 export const changeStock = async (req, res) => {
     try {
         const { id, quantity } = req.body;

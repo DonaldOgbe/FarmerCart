@@ -2,7 +2,7 @@ import prisma from "../configs/prisma.js";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 
-// Register User (Buyer or Farmer) : POST /api/user/register
+// Register User (Buyer or Farmer)
 export const register = async (req, res) => {
     try {
         const { name, email, password, role, farmName, state, lga, phone } = req.body;
