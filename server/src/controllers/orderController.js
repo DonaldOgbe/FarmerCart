@@ -154,6 +154,7 @@ export const placeOrderPaystack = async (req, res) => {
 // Paystack Webhook Handler
 export const paystackWebhook = async (req, res) => {
     try {
+        console.log("Paystack Webhook Event Received!");
         const secret = process.env.PAYSTACK_SECRET_KEY;
 
         // Verify Paystack HMAC Signature
@@ -162,15 +163,20 @@ export const paystackWebhook = async (req, res) => {
             .update(JSON.stringify(req.body))
             .digest('hex');
 
-        if (hash !== req.headers['x-paystack-signature']) {
+        const paystackSignature = req.headers['x-paystack-signature'];
+
+        if (hash !== paystackSignature) {
+            console.log("Signature mismatch! Check PAYSTACK_SECRET_KEY in .env");
             return res.status(400).send("Invalid signature");
         }
 
         const event = req.body;
+        console.log(`Paystack Event Type: ${event.event}`);
 
         // Verify Payment Success Event
         if (event.event === 'charge.success') {
             const { orderId, userId } = event.data.metadata;
+            console.log(`Payment Successful for Order ID: ${orderId}`);
 
             if (orderId) {
                 // Mark Order as Paid
@@ -184,6 +190,7 @@ export const paystackWebhook = async (req, res) => {
                 if (cart) {
                     await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
                 }
+                console.log(`Cart cleared for User ID: ${userId}`);
             }
         }
 
@@ -193,7 +200,6 @@ export const paystackWebhook = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
-
 // Get Buyer Order History
 export const getUserOrders = async (req, res) => {
     try {
