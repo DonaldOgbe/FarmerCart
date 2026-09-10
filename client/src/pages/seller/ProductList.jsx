@@ -35,7 +35,7 @@ function ProductList() {
         quantity: parseInt(value, 10),
       });
       if (data.success) {
-        toast.success("Quantity updated");
+        toast.success("Stock updated successfully");
         setEditState((prev) => ({
           ...prev,
           [id]: { ...prev[id], editing: false },
@@ -52,63 +52,69 @@ function ProductList() {
   return (
     <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll flex flex-col justify-between">
       <div className="w-full md:p-10 p-4">
-        <h2 className="pb-4 text-lg font-medium">All Products</h2>
+        <h2 className="pb-4 text-lg font-medium">Farm Produce Inventory</h2>
         <div className="flex flex-col items-center max-w-4xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
           <table className="md:table-auto table-fixed w-full overflow-hidden">
-            <thead className="text-gray-900 text-sm text-left">
+            <thead className="text-gray-900 text-sm text-left bg-gray-50">
               <tr>
-                <th className="px-4 py-3 font-semibold truncate">Product</th>
+                <th className="px-4 py-3 font-semibold truncate">Produce</th>
                 <th className="px-4 py-3 font-semibold truncate">Category</th>
-                <th className="px-4 py-3 font-semibold truncate hidden md:block">Selling Price</th>
-                <th className="px-4 py-3 font-semibold truncate">Quantity</th>
+                <th className="px-4 py-3 font-semibold truncate hidden md:block">Price ({currency})</th>
+                <th className="px-4 py-3 font-semibold truncate">Unit / Stock</th>
               </tr>
             </thead>
             <tbody className="text-sm text-gray-500">
               {products.map((product) => {
-                const state = editState[product._id] || {
+                const state = editState[product.id] || {
                   value: product.quantity,
                   editing: false,
                 };
 
                 return (
-                  <tr key={product._id} className="border-t border-gray-500/20">
+                  <tr key={product.id} className="border-t border-gray-500/20">
                     <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                      <div className="border border-gray-300 rounded overflow-hidden">
-                        <img src={product.images[0]} alt="Product" className="w-16" />
+                      <div className="border border-gray-300 rounded overflow-hidden w-16 h-16 flex items-center justify-center bg-gray-100">
+                        <img src={product.images[0]} alt="Product" className="w-full h-full object-cover" />
                       </div>
-                      <span className="truncate max-sm:hidden w-full">{product.name}</span>
+                      <div className="flex flex-col truncate">
+                        <span className="truncate font-medium text-gray-800">{product.name}</span>
+                        <span className="text-xs text-gray-400">{product.location}</span>
+                      </div>
                     </td>
                     <td className="px-4 py-3">{product.category}</td>
                     <td className="px-4 py-3 max-sm:hidden">
                       {currency}
-                      {product.offerPrice}
+                      {product.offerPrice || product.price}
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          min="0"
-                          value={state.value}
-                          onChange={(e) => handleChange(product._id, e.target.value)}
-                          onFocus={() => handleEdit(product._id, product.quantity)}
-                          className="w-20 px-2 py-1 border border-gray-400 rounded outline-none text-center"
-                        />
-                        {state.editing && (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleUpdate(product._id)}
-                              className="px-3 py-1 bg-primary hover:bg-primary-dull text-white cursor-pointer rounded-[5px]"
-                            >
-                              Update
-                            </button>
-                            <button
-                              onClick={() => handleCancel(product._id, product.quantity)}
-                              className="px-3 py-1 bg-gray-500 text-white rounded-[5px] cursor-pointer"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        )}
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs font-semibold text-primary-dull">{product.unit}</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min="0"
+                            value={state.value}
+                            onChange={(e) => handleChange(product.id, e.target.value)}
+                            onFocus={() => handleEdit(product.id, product.quantity)}
+                            className="w-20 px-2 py-1 border border-gray-400 rounded outline-none text-center"
+                          />
+                          {state.editing && (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleUpdate(product.id)}
+                                className="px-3 py-1 bg-primary hover:bg-primary-dull text-white cursor-pointer rounded-[5px]"
+                              >
+                                Save
+                              </button>
+                              <button
+                                onClick={() => handleCancel(product.id, product.quantity)}
+                                className="px-3 py-1 bg-gray-500 text-white rounded-[5px] cursor-pointer"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </td>
                   </tr>

@@ -6,11 +6,13 @@ import productRouter from './routes/productRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import addressRouter from './routes/addressRoute.js';
 import orderRouter from './routes/orderRoute.js';
+import corsOptions from './middlewares/cors.middleware.js';
 
 const app = express();
 
 const port = process.env.PORT || 8000;
 
+app.use(corsOptions);
 app.use(express.json());
 app.use(cookieParser()); 
 

@@ -5,19 +5,20 @@ import { Link, NavLink, Outlet } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 function SellerLayout() {
-    const { setIsSeller, navigate, axios } = useAppContext();
+    const { setUser, navigate, axios, user } = useAppContext();
 
     const sidebarLinks = [
-        { name: "Add Product", path: "/seller", icon: assets.add_icon },
-        { name: "Product List", path: "/seller/product-list", icon: assets.product_list_icon },
+        { name: "Add Produce", path: "/seller", icon: assets.add_icon },
+        { name: "Produce List", path: "/seller/product-list", icon: assets.product_list_icon },
         { name: "Orders", path: "/seller/orders", icon: assets.order_icon },
     ];
 
     const logout = async () => {
         try {
-            const { data } = await axios.get('/api/seller/logout');
+            const { data } = await axios.get('/api/user/logout');
             if(data.success){
                 toast.success(data.message);
+                setUser(null);
                 navigate('/');
             }
             else{
@@ -26,7 +27,7 @@ function SellerLayout() {
         } catch (error) {
             toast.error(error.message);
         }
-    }
+    };
 
   return (
     <>
@@ -35,8 +36,8 @@ function SellerLayout() {
                 <img className="cursor-pointer w-34 md:w-38" src= {assets.logo} alt="Logo" />
             </Link>
             <div className="flex items-center gap-5 text-gray-500">
-                <p>Hi! Admin</p>
-                <button onClick={logout} className='border rounded-full text-sm px-4 py-1 cursor-pointer'>Logout</button>
+                <p>Hi, {user?.farmName || user?.name || 'Farmer'}!</p>
+                <button onClick={logout} className='border rounded-full text-sm px-4 py-1 cursor-pointer hover:bg-gray-50'>Logout</button>
             </div>
         </div>
         <div className='flex'>
@@ -54,7 +55,7 @@ function SellerLayout() {
             <Outlet />
         </div>
     </>
-  )
+  );
 }
 
-export default SellerLayout
+export default SellerLayout;

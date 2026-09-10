@@ -17,10 +17,12 @@ function Login() {
   const [stateName, setStateName] = useState("");
   const [phone, setPhone] = useState("");
 
+  const API_BASE_URL = "http://localhost:8000"; 
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      let endpoint = state === "login" ? "/api/user/login" : "/api/user/register";
+      let endpoint = state === "login" ? `${API_BASE_URL}/api/user/login` : `${API_BASE_URL}/api/user/register`;
       
       const payload = state === "login" 
         ? { email, password } 
