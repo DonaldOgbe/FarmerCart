@@ -22,7 +22,7 @@ const AddProduct = () => {
             
             const productData = {
                 name,
-                description: description.split('\n'), // Splits multi-line description into bullets
+                description: description.split('\n'), 
                 category,
                 price: Number(price),
                 offerPrice: Number(offerPrice),

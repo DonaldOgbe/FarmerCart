@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 
 function ProductList() {
   const { products, currency, axios, fetchProducts } = useAppContext();
-  const [editState, setEditState] = useState({}); // { productId: {value, editing} }
+  const [editState, setEditState] = useState({});
 
   const handleEdit = (id, quantity) => {
     setEditState((prev) => ({
@@ -30,7 +30,7 @@ function ProductList() {
   const handleUpdate = async (id) => {
     try {
       const { value } = editState[id];
-      const { data } = await axios.post("/api/product/stock", {
+      const { data } = await axios.post("/api/product", {
         id,
         quantity: parseInt(value, 10),
       });

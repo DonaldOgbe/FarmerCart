@@ -41,7 +41,7 @@ export const AppContextProvider = ({ children }) => {
 
     const fetchProducts = async () => {
         try {
-            const { data } = await axios.get('/api/product/list');
+            const { data } = await axios.get('/api/product');
             if (data.success) {
                 setProducts(data.products);
             }

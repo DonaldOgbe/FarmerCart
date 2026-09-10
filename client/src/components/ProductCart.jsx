@@ -6,91 +6,90 @@ import { toast } from "react-hot-toast";
 const ProductCart = ({ product }) => {
   const { currency, addToCart, removeFromCart, cartItems, navigate } = useAppContext();
 
-  const cartQuantity = cartItems[product._id] || 0;
+  const cartQuantity = cartItems[product.id] || 0;
 
   return (
     product && (
       <div
         onClick={() => {
-          navigate(`/products/${product.category.toLowerCase()}/${product._id}`);
-          scrollTo(0, 0);
+          navigate(`/products/${product.category.toLowerCase()}/${product.id}`);
+          window.scrollTo(0, 0);
         }}
-        className="border border-gray-500/40 rounded-md px-3 py-2 bg-gray-100 min-w-26 max-w-46 w-full"
+        className="border border-gray-500/40 rounded-md px-3 py-2 bg-gray-50/50 hover:shadow-md transition min-w-26 max-w-46 w-full cursor-pointer flex flex-col justify-between"
       >
-        <div className="group cursor-pointer flex items-center justify-center px-2">
-          <img
-            className="group-hover:scale-105 transition max-w-26 md:max-w-36"
-            src={product.images[0]}
-            alt={product.name}
-          />
-        </div>
-        <div className="text-gray-500/60 text-sm">
-          <p>{product.category}</p>
-          <p className="text-gray-700 font-medium text-lg truncate w-full">
-            {product.name}
-          </p>
-
-          <div className="flex items-center gap-0.5">
-            {Array(5)
-              .fill("")
-              .map((_, i) => (
-                <img
-                  key={i}
-                  src={i < 4 ? assets.star_icon : assets.star_dull_icon}
-                  className="mxd:w-3.5 w-3"
-                />
-              ))}
-            <p>(4)</p>
+        <div>
+          <div className="group flex items-center justify-center px-2 py-2">
+            <img
+              className="group-hover:scale-105 transition max-w-26 md:max-w-36 h-32 object-cover rounded"
+              src={product.images[0]}
+              alt={product.name}
+            />
           </div>
-
-          <div className="flex items-end justify-between mt-3">
-            <p className="md:text-xl text-base font-medium text-primary">
-              {currency}
-              {product.offerPrice}{" "}
-              <span className="text-gray-500/60 md:text-sm text-xs line-through">
-                {currency}
-                {product.price}
-              </span>
+          
+          <div className="text-sm mt-1">
+            <p className="text-xs text-primary-dull font-semibold uppercase">{product.category}</p>
+            <p className="text-gray-800 font-medium text-base truncate w-full" title={product.name}>
+              {product.name}
             </p>
 
+            {/* Farm Info Badge */}
+            <p className="text-xs text-gray-500 truncate mt-0.5" title={`${product.farmer?.farmName} • ${product.location}`}>
+              🌾 {product.farmer?.farmName || "Local Farm"}
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
+            <div>
+              <p className="text-xs text-gray-400">Per {product.unit}</p>
+              <p className="md:text-lg text-base font-semibold text-gray-900">
+                {currency}
+                {product.offerPrice || product.price}{" "}
+                {product.offerPrice && (
+                  <span className="text-gray-400 text-xs line-through font-normal">
+                    {currency}
+                    {product.price}
+                  </span>
+                )}
+              </p>
+            </div>
+
             <div
-              className="text-primary"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
+              onClick={(e) => e.stopPropagation()}
             >
               {!cartQuantity ? (
                 <button
-                  className="flex items-center justify-center cursor-pointer gap-1 bg-primary/10 border border-primary/40 md:w-[80px] w-[64px] h-[34px] rounded"
+                  className="flex items-center justify-center cursor-pointer gap-1 bg-primary/10 border border-primary/40 md:w-[72px] w-[60px] h-[32px] rounded text-primary font-medium text-sm hover:bg-primary/20 transition"
                   onClick={() => {
                     if (product.quantity <= 0) {
-                      toast.error("Out of stock!");
+                      toast.error("Produce out of stock!");
                       return;
                     }
-                    addToCart(product._id);
+                    addToCart(product.id);
                   }}
                 >
-                  <img src={assets.cart_icon} alt="cart icon" />
+                  <img src={assets.cart_icon} alt="cart icon" className="w-3.5" />
                   Add
                 </button>
               ) : (
-                <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary/25 rounded select-none">
+                <div className="flex items-center justify-center gap-1.5 md:w-20 w-16 h-[32px] bg-primary/20 border border-primary text-gray-800 rounded select-none">
                   <button
-                    onClick={() => removeFromCart(product._id)}
-                    className="cursor-pointer text-md px-2 h-full"
+                    onClick={() => removeFromCart(product.id)}
+                    className="cursor-pointer text-sm font-bold px-1.5 h-full hover:bg-primary/30"
                   >
                     -
                   </button>
-                  <span className="w-5 text-center">{cartQuantity}</span>
+                  <span className="w-4 text-center text-sm font-semibold">{cartQuantity}</span>
                   <button
                     onClick={() => {
                       if (cartQuantity >= product.quantity) {
-                        toast.error("Out of stock!");
+                        toast.error("Stock limit reached!");
                         return;
                       }
-                      addToCart(product._id);
+                      addToCart(product.id);
                     }}
-                    className="cursor-pointer text-md px-2 h-full"
+                    className="cursor-pointer text-sm font-bold px-1.5 h-full hover:bg-primary/30"
                   >
                     +
                   </button>

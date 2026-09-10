@@ -6,13 +6,12 @@ import authFarmer from '../middlewares/authFarmer.js';
 
 const productRouter = express.Router();
 
-// Public Routes
 productRouter.get('/', productList);
-productRouter.get('/:id', productById);
 
-// Farmer Protected Routes
-productRouter.post('/', authUser, authFarmer, upload.array("images"), addProduct);
+productRouter.post('/add', authUser, authFarmer, upload.array("images"), addProduct);
 productRouter.get('/farmer/my-products', authUser, authFarmer, getFarmerProducts);
 productRouter.post('/stock', authUser, authFarmer, changeStock);
+
+productRouter.get('/:id', productById);
 
 export default productRouter;
