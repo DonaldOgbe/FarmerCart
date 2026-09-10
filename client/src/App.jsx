@@ -19,9 +19,23 @@ import Loading from "./components/Loading.jsx";
 
 function App() {
   const isSellerPath = useLocation().pathname.includes("seller");
-  const { showUserLogin, user, setShowUserLogin } = useAppContext();
+  const { showUserLogin, user, authLoading, setShowUserLogin } = useAppContext();
 
-  const isFarmerOrAdmin = user?.role === 'FARMER' || user?.role === 'ADMIN';
+  // If still checking cookie session, show a clean loading spinner
+  if (authLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-white">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-primary"></div>
+      </div>
+    );
+  }
+
+  const userRole = user?.role ? user.role.toUpperCase() : '';
+  const isFarmerOrAdmin = userRole === 'FARMER' || userRole === 'ADMIN';
+
+  console.log("CURRENT USER OBJECT:", user);
+  console.log("USER ROLE:", userRole);
+  console.log("IS FARMER OR ADMIN?", isFarmerOrAdmin);
 
   return (
     <>

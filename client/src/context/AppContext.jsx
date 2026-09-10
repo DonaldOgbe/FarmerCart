@@ -15,28 +15,27 @@ export const AppContextProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [user, setUser] = useState(null);
+    const [authLoading, setAuthLoading] = useState(true); // 👈 Added loading state
     const [showUserLogin, setShowUserLogin] = useState(false);
     const [products, setProducts] = useState([]);
     const [cartItems, setCartItems] = useState({});
     const [searchQuery, setSearchQuery] = useState("");
 
-    const fetchUser = async () => {
+   const fetchUser = async () => {
         try {
             const { data } = await axios.get('/api/user/is-auth');
+            console.log("is-auth response data:", data);
             if (data.success) {
                 setUser(data.user);
-                if (data.user.cart && data.user.cart.items) {
-                    const cartMap = {};
-                    data.user.cart.items.forEach(item => {
-                        cartMap[item.productId] = item.quantity;
-                    });
-                    setCartItems(cartMap);
-                }
+                // ...
             } else {
                 setUser(null);
             }
-        } catch (error) {
+        } catch (err) {
+            console.log("is-auth error:", err.response?.data || err.message);
             setUser(null);
+        } finally {
+            setAuthLoading(false);
         }
     };
 
@@ -45,11 +44,9 @@ export const AppContextProvider = ({ children }) => {
             const { data } = await axios.get('/api/product/list');
             if (data.success) {
                 setProducts(data.products);
-            } else {
-                toast.error(data.message);
             }
-        } catch (error) {
-            toast.error(error.message);
+        } catch (_error) {
+            toast.error(_error.message);
         }
     };
 
@@ -66,7 +63,7 @@ export const AppContextProvider = ({ children }) => {
         if (user) {
             try {
                 await axios.post('/api/cart/update', { productId, quantity: cartData[productId] });
-            } catch (error) {
+            } catch {
                 toast.error("Failed to sync cart");
             }
         }
@@ -85,7 +82,7 @@ export const AppContextProvider = ({ children }) => {
         if (user) {
             try {
                 await axios.post('/api/cart/update', { productId, quantity });
-            } catch (error) {
+            } catch {
                 toast.error("Failed to sync cart");
             }
         }
@@ -106,7 +103,7 @@ export const AppContextProvider = ({ children }) => {
             try {
                 const newQty = cartData[productId] || 0;
                 await axios.post('/api/cart/update', { productId, quantity: newQty });
-            } catch (error) {
+            } catch {
                 toast.error("Failed to sync cart");
             }
         }
@@ -142,6 +139,7 @@ export const AppContextProvider = ({ children }) => {
         navigate, 
         user, 
         setUser, 
+        authLoading,
         showUserLogin, 
         setShowUserLogin, 
         products, 
