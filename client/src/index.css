@@ -1,12 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import "tailwindcss";
+
 *{
     font-family: "Outfit", sans-serif;
 }
 
 @theme{
-    --color-primary: #4debb8;
-    --color-primary-dull: #28edae;
+    
+    --color-primary: #264A1D;        /* Dark Green (Main Cart & "Farmer") */
+    --color-primary-dull: #1E3A16;   /* Slightly darker shade for hover states */
+    --color-accent: #F87C04;         /* Vibrant Orange (Carrot & "Cart") */
+    --color-leaf: #5FAF2F;           /* Secondary Green (Leaves & Produce highlights) */
 }
 
 .no-scrollbar::-webkit-scrollbar{
