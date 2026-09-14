@@ -6,11 +6,12 @@
 }
 
 @theme{
-    
-    --color-primary: #264A1D;        /* Dark Green (Main Cart & "Farmer") */
-    --color-primary-dull: #1E3A16;   /* Slightly darker shade for hover states */
-    --color-accent: #F87C04;         /* Vibrant Orange (Carrot & "Cart") */
-    --color-leaf: #5FAF2F;           /* Secondary Green (Leaves & Produce highlights) */
+    --color-primary: #264A1D;
+    --color-primary-dull: #1E3A16;
+    --color-accent: #F87C04;
+    --color-leaf: #5FAF2F;
+    --color-bg: #F6F8F1;
+    --color-line: #264A1D1A;
 }
 
 .no-scrollbar::-webkit-scrollbar{

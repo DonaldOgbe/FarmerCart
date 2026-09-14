@@ -6,60 +6,59 @@ import {
   FaTwitter,
   FaGithub,
 } from "react-icons/fa";
-import { assets } from "../assets/assets.js";
+import { footerLinks } from "../assets/assets.js";
+import Logo from "./Logo.jsx";
 
 function Footer() {
   return (
-    <footer className="flex flex-col items-center justify-center w-full mt-18 py-10 bg-gradient-to-b from-[#264A1D]/5 to-[#264A1D]/15">
-      <div className="flex items-center ">
-        <img
-          className="hover:bg-[#264A1D]/10 p-2 rounded-2xl cursor-pointer"
-          src={assets.logo}
-          alt="logo"
-        />
+    <footer className="w-full mt-24 border-t border-line bg-bg">
+      <div className="max-w-6xl mx-auto px-6 md:px-16 lg:px-24 xl:px-32 py-12 grid grid-cols-1 md:grid-cols-[1.3fr_1fr_1fr_1fr] gap-10">
+        <div>
+          <Logo />
+          <p className="mt-4 text-sm text-gray-600 max-w-[220px]">
+            Fresh produce, straight from Nigerian farms to your doorstep.
+          </p>
+        </div>
+
+        {footerLinks.map((section, i) => (
+          <div key={i}>
+            <p className="font-medium text-primary mb-3">{section.title}</p>
+            <ul className="space-y-2 text-sm text-gray-600">
+              {section.links.map((link, j) => (
+                <li key={j}>
+                  <a href={link.url} className="hover:text-accent transition">
+                    {link.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
-      {/* Copyright */}
-      <p className="mt-4 text-center text-gray-700">
-        Copyright © 2026{" "}
-        <a href="#" className="underline text-[#264A1D] font-medium hover:text-[#F87C04] transition">
-          FarmerCart
-        </a>
-        . All rights reserved.
-      </p>
-
-      {/* Social Icons */}
-      <div className="flex items-center gap-6 mt-5 text-2xl">
-        <a
-          href="#"
-          className="hover:-translate-y-0.5 transition-all duration-300 text-blue-600"
-        >
-          <FaFacebookF />
-        </a>
-        <a
-          href="#"
-          className="hover:-translate-y-0.5 transition-all duration-300 text-purple-600"
-        >
-          <FaInstagram />
-        </a>
-        <a
-          href="#"
-          className="hover:-translate-y-0.5 transition-all duration-300 text-blue-400"
-        >
-          <FaLinkedinIn />
-        </a>
-        <a
-          href="#"
-          className="hover:-translate-y-0.5 transition-all duration-300 text-sky-500"
-        >
-          <FaTwitter />
-        </a>
-        <a
-          href="#"
-          className="hover:-translate-y-0.5 transition-all duration-300 text-gray-700"
-        >
-          <FaGithub />
-        </a>
+      <div className="border-t border-line">
+        <div className="max-w-6xl mx-auto px-6 md:px-16 lg:px-24 xl:px-32 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-gray-600">
+            © 2026 FarmerCart. All rights reserved.
+          </p>
+          <div className="flex items-center gap-5 text-lg text-primary">
+            <a href="#" className="hover:text-accent transition">
+              <FaFacebookF />
+            </a>
+            <a href="#" className="hover:text-accent transition">
+              <FaInstagram />
+            </a>
+            <a href="#" className="hover:text-accent transition">
+              <FaLinkedinIn />
+            </a>
+            <a href="#" className="hover:text-accent transition">
+              <FaTwitter />
+            </a>
+            <a href="#" className="hover:text-accent transition">
+              <FaGithub />
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );
