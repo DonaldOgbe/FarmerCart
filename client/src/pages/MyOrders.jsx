@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useAppContext } from '../context/AppContext.jsx'
-import { dummyOrders } from '../assets/assets.js';
 
 function MyOrders() {
     const [myOrders, setMyOrders] = useState([]);

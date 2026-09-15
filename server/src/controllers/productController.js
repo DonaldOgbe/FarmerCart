@@ -161,3 +161,31 @@ export const changeStock = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 };
+
+export const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const existingProduct = await prisma.product.findUnique({ where: { id } });
+        if (!existingProduct) {
+            return res.json({ success: false, message: "Produce not found" });
+        }
+
+        if (existingProduct.farmerId !== req.userId && req.userRole !== 'ADMIN') {
+            return res.json({ success: false, message: "Not authorized to delete this listing" });
+        }
+
+        await prisma.product.delete({ where: { id } });
+
+        res.json({ success: true, message: "Produce Listing Deleted" });
+    } catch (error) {
+        if (error.code === 'P2003') {
+            return res.json({
+                success: false,
+                message: "This produce has existing orders and can't be deleted. Set stock to 0 to unlist it instead."
+            });
+        }
+        console.error(error.message);
+        res.json({ success: false, message: error.message });
+    }
+};
