@@ -2,14 +2,14 @@ import React from 'react'
 
 function NewsLetter() {
   return (
-    <div className="w-full bg-emerald-100/40 px-4 sm:px-6 lg:px-8 text-center py-12 sm:py-16 lg:py-20 flex flex-col items-center justify-center mt-6">
+    <div className="w-full bg-primary/5 px-4 sm:px-6 lg:px-8 text-center py-12 sm:py-16 lg:py-20 flex flex-col items-center justify-center mt-6">
       
       {/* Heading */}
       <p className="text-gray-600 font-bold text-xl sm:text-2xl lg:text-3xl">
-        Get Updated!
+        New Harvests, First.
       </p>
       <h1 className="max-w-lg font-semibold text-2xl sm:text-3xl lg:text-4xl leading-snug sm:leading-snug lg:leading-[44px] mt-3 px-2">
-        Subscribe to our Newsletter & Get the Latest News
+        Know when your favorite produce comes into season
       </h1>
 
       {/* Input + Button */}

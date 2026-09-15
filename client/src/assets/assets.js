@@ -20,10 +20,10 @@ import box_icon from "./box_icon.svg";
 import trust_icon from "./trust_icon.svg";
 import black_arrow_icon from "./black_arrow_icon.svg";
 import white_arrow_icon from "./white_arrow_icon.svg";
-import main_banner_bg from "./main_banner_bg.png";
-import main_banner_bg_sm from "./main_banner_bg_sm.png";
-import bottom_banner_image from "./bottom_banner_image.png";
-import bottom_banner_image_sm from "./bottom_banner_image_sm.png";
+import main_banner_bg from "./main_banner_bg.webp";
+import main_banner_bg_sm from "./main_banner_bg_sm.webp";
+import bottom_banner_image from "./bottom_banner_image.webp";
+import bottom_banner_image_sm from "./bottom_banner_image_sm.webp";
 import add_address_iamge from "./add_address_image.svg";
 import organic_vegitable_image from "./organic_vegitable_image.png";
 import fresh_fruits_image from "./fresh_fruits_image.png";
@@ -180,23 +180,23 @@ export const footerLinks = [
 export const features = [
   {
     icon: delivery_truck_icon,
-    title: "Fastest Delivery",
-    description: "Groceries delivered in under 30 minutes.",
+    title: "Delivery you can track",
+    description: "Produce ships within days of harvest, not weeks.",
   },
   {
     icon: leaf_icon,
-    title: "Freshness Guaranteed",
-    description: "Fresh produce straight from the source.",
+    title: "Straight from the farm",
+    description: "No resellers, no markups — buy directly from the grower.",
   },
   {
     icon: coin_icon,
-    title: "Affordable Prices",
-    description: "Quality groceries at unbeatable prices.",
+    title: "Fair prices, both ways",
+    description: "Farmers set their own prices. You skip the middleman markup.",
   },
   {
     icon: trust_icon,
-    title: "Trusted by Thousands",
-    description: "Loved by 10,000+ happy customers.",
+    title: "Verified farmers only",
+    description: "Every seller on FarmerCart is a registered producer.",
   },
 ];
 
