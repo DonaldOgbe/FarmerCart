@@ -1,6 +1,8 @@
 import crypto from 'crypto';
 import prisma from '../configs/prisma.js';
 
+const SHIPPING_FEE = 1500;
+
 // Place Order - Cash on Delivery
 export const placeOrderCOD = async (req, res) => {
     try {
@@ -29,8 +31,7 @@ export const placeOrderCOD = async (req, res) => {
             return acc + (price * item.quantity);
         }, 0);
 
-        const tax = subtotal * 0.02; // 2% Tax
-        const totalAmount = Math.round(subtotal + tax);
+        const totalAmount = Math.round(subtotal + SHIPPING_FEE);
 
 
         // Create Order and linked OrderItems in PostgreSQL
@@ -94,8 +95,7 @@ export const placeOrderPaystack = async (req, res) => {
             return acc + (price * item.quantity);
         }, 0);
 
-        const tax = subtotal * 0.02;
-        const totalAmount = Math.round(subtotal + tax);
+        const totalAmount = Math.round(subtotal + SHIPPING_FEE);
 
         const order = await prisma.order.create({
             data: {

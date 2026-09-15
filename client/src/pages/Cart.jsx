@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 const Cart = () => {
     const { products, currency, cartItems, setCartItems, removeFromCart, getCartCount, updateCartItem,
-        navigate, getCartAmount, axios, user } = useAppContext();
+        navigate, getCartAmount, axios, user, shippingFee } = useAppContext();
 
     const [cartArray, setCartArray] = useState([]);
     const [addresses, setAddresses] = useState([]);
@@ -182,19 +182,16 @@ const Cart = () => {
 
                 <hr className="border-gray-200" />
 
-                <div className="text-gray-600 mt-4 space-y-2 text-sm">
+                <div className="text-gray-500 mt-4 space-y-2">
                     <p className="flex justify-between">
-                        <span>Subtotal</span><span>{currency}{getCartAmount() / 1.02}</span>
+                        <span>Subtotal</span><span>{currency}{getCartAmount()}</span>
                     </p>
                     <p className="flex justify-between">
-                        <span>Logistics / Delivery</span><span className="text-green-600 font-medium">Free</span>
+                        <span>Shipping Fee</span><span>{currency}{shippingFee}</span>
                     </p>
-                    <p className="flex justify-between">
-                        <span>Tax (2%)</span><span>{currency}{getCartAmount() - (getCartAmount() / 1.02)}</span>
-                    </p>
-                    <p className="flex justify-between text-lg font-bold text-gray-900 mt-3 pt-2 border-t border-gray-200">
-                        <span>Total:</span>
-                        <span>{currency}{getCartAmount()}</span>
+                    <p className="flex justify-between text-lg font-medium mt-3">
+                        <span>Total Amount:</span>
+                        <span>{currency}{getCartAmount() + shippingFee}</span>
                     </p>
                 </div>
 

@@ -20,6 +20,7 @@ export const AppContextProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
     const [cartItems, setCartItems] = useState({});
     const [searchQuery, setSearchQuery] = useState("");
+    const shippingFee = 1500;
 
    const fetchUser = async () => {
         try {
@@ -126,8 +127,7 @@ export const AppContextProvider = ({ children }) => {
                 totalAmount += price * cartItems[productId];
             }
         }
-        const tax = totalAmount * 0.02;
-        return Math.floor((totalAmount + tax) * 100) / 100;
+        return Math.floor(totalAmount * 100) / 100;
     };
 
     useEffect(() => {
@@ -155,7 +155,8 @@ export const AppContextProvider = ({ children }) => {
         getCartCount, 
         axios,
         fetchProducts, 
-        fetchUser 
+        fetchUser,
+        shippingFee
     };
     
     return <AppContext.Provider value={value}>
