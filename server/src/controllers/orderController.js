@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import prisma from '../configs/prisma.js';
+import { PAYSTACK_SECRET_KEY } from '../env.js';
 
 const SHIPPING_FEE = 1500;
 
@@ -122,7 +123,7 @@ export const placeOrderPaystack = async (req, res) => {
         const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
             method: 'POST',
             headers: {
-                Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+                Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -155,7 +156,7 @@ export const placeOrderPaystack = async (req, res) => {
 export const paystackWebhook = async (req, res) => {
     try {
         console.log("Paystack Webhook Event Received!");
-        const secret = process.env.PAYSTACK_SECRET_KEY;
+        const secret = PAYSTACK_SECRET_KEY;
 
         // Verify Paystack HMAC Signature
         const hash = crypto

@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 enum Role {
@@ -84,7 +84,7 @@ model Product {
   description String
   price       Decimal
   offerPrice  Decimal?
-  images      String[]
+  images      String   @default("[]") // Stored as a JSON string e.g. '["url1", "url2"]'
   category    String
   quantity    Int      @default(0)
   inStock     Boolean  @default(true)

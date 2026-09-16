@@ -1,19 +1,25 @@
 import cors from "cors";
-
-const allowedOrigins = ["http://localhost:5173"];
+import { ALLOWED_ORIGINS, NODE_ENV } from "../env.js"; 
 
 const corsOptions = cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+  origin: (origin, callback) => {
+    
+    if (!origin) {
+      if (NODE_ENV === "development") {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS blocked: Request missing Origin header"));
     }
-  },
-  credentials: true, 
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-});
 
+    if (ALLOWED_ORIGINS.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+});
 
 export default corsOptions;

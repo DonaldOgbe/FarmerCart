@@ -1,6 +1,15 @@
 import cloudinary from "../configs/cloudinary.js";
 import prisma from '../configs/prisma.js';
 
+// parse JSON image strings back into arrays for API responses
+const parseProductImages = (product) => {
+    if (!product) return null;
+    return {
+        ...product,
+        images: product.images ? JSON.parse(product.images) : []
+    };
+};
+
 // Add Produce Listing
 export const addProduct = async (req, res) => {
     try {
@@ -31,7 +40,6 @@ export const addProduct = async (req, res) => {
 
         const produceLocation = location || `${farmerProfile?.lga || ''}, ${farmerProfile?.state || ''}`.trim();
 
-        
         const product = await prisma.product.create({
             data: {
                 farmerId: req.userId,
@@ -44,11 +52,15 @@ export const addProduct = async (req, res) => {
                 location: produceLocation,
                 quantity: quantity ? parseInt(quantity) : 0,
                 inStock: (quantity ? parseInt(quantity) : 0) > 0,
-                images: imagesUrl
+                images: JSON.stringify(imagesUrl) 
             }
         });
 
-        res.json({ success: true, message: "Produce Listed Successfully", product });
+        res.json({ 
+            success: true, 
+            message: "Produce Listed Successfully", 
+            product: parseProductImages(product) 
+        });
     } catch (error) {
         console.error(error.message);
         res.json({ success: false, message: error.message });
@@ -58,7 +70,7 @@ export const addProduct = async (req, res) => {
 // Get All Produce Listings 
 export const productList = async (req, res) => {
     try {
-        const products = await prisma.product.findMany({
+        const rawProducts = await prisma.product.findMany({
             where: { inStock: true },
             include: {
                 farmer: {
@@ -73,6 +85,8 @@ export const productList = async (req, res) => {
             },
             orderBy: { createdAt: 'desc' }
         });
+
+        const products = rawProducts.map(parseProductImages);
 
         res.json({ success: true, products });
     } catch (error) {
@@ -105,7 +119,7 @@ export const productById = async (req, res) => {
             return res.json({ success: false, message: "Produce not found" });
         }
 
-        res.json({ success: true, product });
+        res.json({ success: true, product: parseProductImages(product) });
     } catch (error) {
         console.error(error.message);
         res.json({ success: false, message: error.message });
@@ -115,10 +129,12 @@ export const productById = async (req, res) => {
 // Get Listings Created by Logged-In Farmer
 export const getFarmerProducts = async (req, res) => {
     try {
-        const products = await prisma.product.findMany({
+        const rawProducts = await prisma.product.findMany({
             where: { farmerId: req.userId },
             orderBy: { createdAt: 'desc' }
         });
+
+        const products = rawProducts.map(parseProductImages);
 
         res.json({ success: true, products });
     } catch (error) {
@@ -155,7 +171,11 @@ export const changeStock = async (req, res) => {
             }
         });
 
-        res.json({ success: true, message: "Stock Updated Successfully", product: updatedProduct });
+        res.json({ 
+            success: true, 
+            message: "Stock Updated Successfully", 
+            product: parseProductImages(updatedProduct) 
+        });
     } catch (error) {
         console.error(error.message);
         res.json({ success: false, message: error.message });
