@@ -17,7 +17,7 @@ function Login() {
   const [stateName, setStateName] = useState("");
   const [phone, setPhone] = useState("");
 
-  const API_BASE_URL = "http://localhost:8000"; 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://farmercart-6d0z.onrender.com";
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
