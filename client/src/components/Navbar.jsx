@@ -17,6 +17,7 @@ function Navbar() {
     searchQuery,
     getCartAmount,
     getCartCount,
+    setCartItems,
     axios,
   } = useAppContext();
 
@@ -28,6 +29,7 @@ function Navbar() {
       if (data.success) {
         toast.success(data.message);
         setUser(null);
+        setCartItems({});
         navigate("/");
       } else {
         toast.error(data.message);

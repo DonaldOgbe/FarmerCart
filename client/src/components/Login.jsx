@@ -17,7 +17,7 @@ function Login() {
   const [stateName, setStateName] = useState("");
   const [phone, setPhone] = useState("");
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://farmercart-6d0z.onrender.com";
+  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "https://farmercart-6d0z.onrender.com";
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();

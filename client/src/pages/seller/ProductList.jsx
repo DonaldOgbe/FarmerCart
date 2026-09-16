@@ -1,10 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAppContext } from "../../context/AppContext";
 import { toast } from "react-hot-toast";
 
 function ProductList() {
-  const { products, currency, axios, fetchProducts } = useAppContext();
+  const { currency, axios } = useAppContext();
+  const [farmerProducts, setFarmerProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [editState, setEditState] = useState({});
+
+  // 1. Fetch only the logged-in farmer's products
+  const fetchFarmerProducts = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get("/api/product/farmer/my-products");
+      if (data.success) {
+        setFarmerProducts(data.products);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFarmerProducts();
+  }, []);
 
   const handleEdit = (id, quantity) => {
     setEditState((prev) => ({
@@ -30,7 +53,7 @@ function ProductList() {
   const handleUpdate = async (id) => {
     try {
       const { value } = editState[id];
-      const { data } = await axios.post("/api/product", {
+      const { data } = await axios.post("/api/product/stock", {
         id,
         quantity: parseInt(value, 10),
       });
@@ -40,7 +63,7 @@ function ProductList() {
           ...prev,
           [id]: { ...prev[id], editing: false },
         }));
-        fetchProducts();
+        fetchFarmerProducts();
       } else {
         toast.error(data.message);
       }
@@ -55,7 +78,7 @@ function ProductList() {
       const { data } = await axios.delete(`/api/product/${id}`);
       if (data.success) {
         toast.success(data.message);
-        fetchProducts();
+        fetchFarmerProducts();
       } else {
         toast.error(data.message);
       }
@@ -63,6 +86,10 @@ function ProductList() {
       toast.error(err.message);
     }
   };
+
+  if (loading) {
+    return <div className="p-10 text-center">Loading your farm produce...</div>;
+  }
 
   return (
     <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll flex flex-col justify-between">
@@ -84,86 +111,94 @@ function ProductList() {
               </tr>
             </thead>
             <tbody className="text-sm text-gray-500">
-              {products.map((product) => {
-                const state = editState[product.id] || {
-                  value: product.quantity,
-                  editing: false,
-                };
+              {farmerProducts.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="text-center py-6 text-gray-400">
+                    No produce listed yet.
+                  </td>
+                </tr>
+              ) : (
+                farmerProducts.map((product) => {
+                  const state = editState[product.id] || {
+                    value: product.quantity,
+                    editing: false,
+                  };
 
-                return (
-                  <tr key={product.id} className="border-t border-gray-500/20">
-                    <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                      <div className="border border-gray-300 rounded overflow-hidden w-16 h-16 flex items-center justify-center bg-gray-100">
-                        <img
-                          src={product.images[0]}
-                          alt="Product"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex flex-col truncate">
-                        <span className="truncate font-medium text-gray-800">
-                          {product.name}
-                        </span>
-                        <span className="text-xs text-gray-400">
-                          {product.location}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">{product.category}</td>
-                    <td className="px-4 py-3 max-sm:hidden">
-                      {currency}
-                      {product.offerPrice || product.price}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs font-semibold text-primary-dull">
-                          {product.unit}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="number"
-                            min="0"
-                            value={state.value}
-                            onChange={(e) =>
-                              handleChange(product.id, e.target.value)
-                            }
-                            onFocus={() =>
-                              handleEdit(product.id, product.quantity)
-                            }
-                            className="w-20 px-2 py-1 border border-gray-400 rounded outline-none text-center"
+                  return (
+                    <tr key={product.id} className="border-t border-gray-500/20">
+                      <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
+                        <div className="border border-gray-300 rounded overflow-hidden w-16 h-16 flex items-center justify-center bg-gray-100">
+                          <img
+                            src={product.images?.[0]}
+                            alt="Product"
+                            className="w-full h-full object-cover"
                           />
-                          {state.editing && (
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleUpdate(product.id)}
-                                className="px-3 py-1 bg-primary hover:bg-primary-dull text-white cursor-pointer rounded-[5px]"
-                              >
-                                Save
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handleCancel(product.id, product.quantity)
-                                }
-                                className="px-3 py-1 bg-gray-500 text-white rounded-[5px] cursor-pointer"
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          )}
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <button
-                        onClick={() => handleDelete(product.id)}
-                        className="text-red-600 hover:text-red-700 text-sm font-medium cursor-pointer"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+                        <div className="flex flex-col truncate">
+                          <span className="truncate font-medium text-gray-800">
+                            {product.name}
+                          </span>
+                          <span className="text-xs text-gray-400">
+                            {product.location}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">{product.category}</td>
+                      <td className="px-4 py-3 max-sm:hidden">
+                        {currency}
+                        {product.offerPrice || product.price}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xs font-semibold text-primary-dull">
+                            {product.unit}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="number"
+                              min="0"
+                              value={state.value}
+                              onChange={(e) =>
+                                handleChange(product.id, e.target.value)
+                              }
+                              onFocus={() =>
+                                handleEdit(product.id, product.quantity)
+                              }
+                              className="w-20 px-2 py-1 border border-gray-400 rounded outline-none text-center"
+                            />
+                            {state.editing && (
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleUpdate(product.id)}
+                                  className="px-3 py-1 bg-primary hover:bg-primary-dull text-white cursor-pointer rounded-[5px]"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleCancel(product.id, product.quantity)
+                                  }
+                                  className="px-3 py-1 bg-gray-500 text-white rounded-[5px] cursor-pointer"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          className="text-red-600 hover:text-red-700 text-sm font-medium cursor-pointer"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
