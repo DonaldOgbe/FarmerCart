@@ -2,9 +2,11 @@ import React from "react";
 import { assets } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
 import { toast } from "react-hot-toast";
+import { FaTractor } from "react-icons/fa";
 
 const ProductCart = ({ product }) => {
-  const { currency, addToCart, removeFromCart, cartItems, navigate } = useAppContext();
+  const { currency, addToCart, removeFromCart, cartItems, navigate } =
+    useAppContext();
 
   const cartQuantity = cartItems[product.id] || 0;
 
@@ -25,16 +27,25 @@ const ProductCart = ({ product }) => {
               alt={product.name}
             />
           </div>
-          
+
           <div className="text-sm mt-1">
-            <p className="text-xs text-primary-dull font-semibold uppercase">{product.category}</p>
-            <p className="text-gray-800 font-medium text-base truncate w-full" title={product.name}>
+            <p className="text-xs text-primary-dull font-semibold uppercase">
+              {product.category}
+            </p>
+            <p
+              className="text-gray-800 font-medium text-base truncate w-full"
+              title={product.name}
+            >
               {product.name}
             </p>
 
             {/* Farm Info Badge */}
-            <p className="text-xs text-gray-500 truncate mt-0.5" title={`${product.farmer?.farmName} • ${product.location}`}>
-              🌾 {product.farmer?.farmName || "Local Farm"}
+            <p
+              className="text-xs text-gray-500 truncate mt-0.5 flex items-center gap-1.5"
+              title={`${product.farmer?.farmName} • ${product.location}`}
+            >
+              <FaTractor className="text-gray-400 shrink-0" />
+              <span>{product.farmer?.farmName || "Local Farm"}</span>
             </p>
           </div>
         </div>
@@ -55,9 +66,7 @@ const ProductCart = ({ product }) => {
               </p>
             </div>
 
-            <div
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div onClick={(e) => e.stopPropagation()}>
               {!cartQuantity ? (
                 <button
                   className="flex items-center justify-center cursor-pointer gap-1 bg-primary/10 border border-primary/40 md:w-[72px] w-[60px] h-[32px] rounded text-primary font-medium text-sm hover:bg-primary/20 transition"
@@ -69,7 +78,11 @@ const ProductCart = ({ product }) => {
                     addToCart(product.id);
                   }}
                 >
-                  <img src={assets.cart_icon} alt="cart icon" className="w-3.5" />
+                  <img
+                    src={assets.cart_icon}
+                    alt="cart icon"
+                    className="w-3.5"
+                  />
                   Add
                 </button>
               ) : (
@@ -80,7 +93,9 @@ const ProductCart = ({ product }) => {
                   >
                     -
                   </button>
-                  <span className="w-4 text-center text-sm font-semibold">{cartQuantity}</span>
+                  <span className="w-4 text-center text-sm font-semibold">
+                    {cartQuantity}
+                  </span>
                   <button
                     onClick={() => {
                       if (cartQuantity >= product.quantity) {
