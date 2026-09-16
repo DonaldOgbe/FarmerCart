@@ -5,10 +5,7 @@ const corsOptions = cors({
   origin: (origin, callback) => {
     
     if (!origin) {
-      if (NODE_ENV === "development") {
-        return callback(null, true);
-      }
-      return callback(new Error("CORS blocked: Request missing Origin header"));
+      return callback(null, true);
     }
 
     if (ALLOWED_ORIGINS.includes(origin)) {
